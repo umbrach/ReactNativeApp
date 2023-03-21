@@ -24,16 +24,20 @@ const initialState = {
   password: "",
 };
 
-export default function RegistrationScreen() {
+export default function LoginScreen() {
   const [isShowKeyboard, setIsShowKeyboard] = useState(false);
   const [state, setState] = useState(initialState);
   const [emailFocus, setEmailFocus] = useState(false);
   const [passwordFocus, setPasswordFocus] = useState(false);
 
+  const [dimensions, setDimensions] = useState(
+    Dimensions.get("window").width - 16 * 2
+  );
+
   useEffect(() => {
     const onChange = () => {
-      const width = Dimensions.get("window").width;
-      console.log("width", width);
+      const width = Dimensions.get("window").width - 16 * 2;
+      setDimensions(width);
     };
     Dimensions.addEventListener("change", onChange);
     return () => {
@@ -74,7 +78,7 @@ export default function RegistrationScreen() {
           <View
             style={{ ...styles.box, paddingBottom: isShowKeyboard ? 32 : 78 }}
           >
-            <View style={{ position: "absolute", top: -60, left: 128 }}>
+            <View style={{ position: "absolute", marginBottom: 32, top: -60 }}>
               <View style={styles.avatar}>
                 <AntDesign
                   style={styles.addIcon}
@@ -87,7 +91,7 @@ export default function RegistrationScreen() {
             <KeyboardAvoidingView
               behavior={Platform.OS === "ios" ? "padding" : "height"}
             >
-              <View style={styles.form}>
+              <View style={{ ...styles.form, width: dimensions }}>
                 <Text style={styles.title}>Login</Text>
                 <View>
                   <TextInput
@@ -136,9 +140,7 @@ export default function RegistrationScreen() {
                 >
                   <Text style={styles.btnTitle}>Login</Text>
                 </TouchableOpacity>
-                <Text style={styles.login}>
-                  Don't have an account? Registration
-                </Text>
+                <Text style={styles.login}>Don't have an account? Sign in</Text>
               </View>
             </KeyboardAvoidingView>
           </View>
@@ -161,6 +163,7 @@ const styles = StyleSheet.create({
   },
   box: {
     flex: 0.6,
+    alignItems: "center",
     backgroundColor: "#fff",
     borderTopRightRadius: 25,
     borderTopLeftRadius: 25,
