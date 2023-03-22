@@ -45,21 +45,21 @@ export default function LoginScreen() {
     };
   }, []);
 
-  const [fontsLoaded] = useFonts({
-    "Roboto-regular": require("../assets/fonts/Roboto-Regular.ttf"),
-    "Roboto-medium": require("../assets/fonts/Roboto-Medium.ttf"),
-    "Roboto-bold": require("../assets/fonts/Roboto-Bold.ttf"),
-  });
+  // const [fontsLoaded] = useFonts({
+  //   "Roboto-regular": require("../assets/fonts/Roboto-Regular.ttf"),
+  //   "Roboto-medium": require("../assets/fonts/Roboto-Medium.ttf"),
+  //   "Roboto-bold": require("../assets/fonts/Roboto-Bold.ttf"),
+  // });
 
-  const onLayoutRootView = useCallback(async () => {
-    if (fontsLoaded) {
-      await SplashScreen.hideAsync();
-    }
-  }, [fontsLoaded]);
+  // const onLayoutRootView = useCallback(async () => {
+  //   if (fontsLoaded) {
+  //     await SplashScreen.hideAsync();
+  //   }
+  // }, [fontsLoaded]);
 
-  if (!fontsLoaded) {
-    return null;
-  }
+  // if (!fontsLoaded) {
+  //   return null;
+  // }
 
   const keyboardHide = () => {
     setIsShowKeyboard(true);
@@ -70,7 +70,7 @@ export default function LoginScreen() {
 
   return (
     <TouchableWithoutFeedback onPress={keyboardHide}>
-      <View style={styles.container} onLayout={onLayoutRootView}>
+      <View style={styles.container} >
         <ImageBackground
           source={require("../assets/images/Photo_BG.png")}
           style={styles.image}

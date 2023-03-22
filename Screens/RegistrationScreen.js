@@ -1,4 +1,4 @@
-import { useState, useCallback, useEffect } from "react";
+import { useState, useEffect } from "react";
 import {
   StyleSheet,
   Text,
@@ -13,11 +13,8 @@ import {
   Dimensions,
 } from "react-native";
 import { StatusBar } from "expo-status-bar";
-import { useFonts } from "expo-font";
-import * as SplashScreen from "expo-splash-screen";
 import { AntDesign } from "@expo/vector-icons";
 
-SplashScreen.preventAutoHideAsync();
 
 const initialState = {
   login: "",
@@ -46,22 +43,6 @@ export default function RegistrationScreen() {
     };
   }, []);
 
-  const [fontsLoaded] = useFonts({
-    "Roboto-regular": require("../assets/fonts/Roboto-Regular.ttf"),
-    "Roboto-medium": require("../assets/fonts/Roboto-Medium.ttf"),
-    "Roboto-bold": require("../assets/fonts/Roboto-Bold.ttf"),
-  });
-
-  const onLayoutRootView = useCallback(async () => {
-    if (fontsLoaded) {
-      await SplashScreen.hideAsync();
-    }
-  }, [fontsLoaded]);
-
-  if (!fontsLoaded) {
-    return null;
-  }
-
   const keyboardHide = () => {
     setIsShowKeyboard(true);
     Keyboard.dismiss();
@@ -71,7 +52,7 @@ export default function RegistrationScreen() {
 
   return (
     <TouchableWithoutFeedback onPress={keyboardHide}>
-      <View style={styles.container} onLayout={onLayoutRootView}>
+      <View style={styles.container}>
         <ImageBackground
           source={require("../assets/images/Photo_BG.png")}
           style={styles.image}
