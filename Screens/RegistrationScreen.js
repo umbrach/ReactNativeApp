@@ -15,7 +15,6 @@ import {
 import { StatusBar } from "expo-status-bar";
 import { AntDesign } from "@expo/vector-icons";
 
-
 const initialState = {
   login: "",
   email: "",
@@ -187,7 +186,7 @@ const styles = StyleSheet.create({
     textAlign: "center",
     fontFamily: "Roboto-medium",
     fontSize: 30,
-    fontWeight: 500,
+    fontWeight: 'medium',
     color: "#212121",
     marginTop: 92,
     marginBottom: 32,
@@ -218,7 +217,6 @@ const styles = StyleSheet.create({
   btnTitle: {
     fontFamily: "Roboto-regular",
     fontSize: 16,
-    fontWeight: 400,
     color: "#fff",
     textAlign: "center",
   },
@@ -226,7 +224,6 @@ const styles = StyleSheet.create({
     color: "#1B4371",
     fontFamily: "Roboto-regular",
     fontSize: 16,
-    fontWeight: 400,
     textAlign: "center",
     marginBottom: 45,
   },

@@ -25,7 +25,7 @@ export default function App() {
   }
   return (
     <View style={styles.container} onLayout={onLayoutRootView}>
-      {Math.random() > 0.5 ? <RegistrationScreen /> : <LoginScreen />}
+      {true ? <RegistrationScreen /> : <LoginScreen />}
     </View>
   );
 }
