@@ -13,18 +13,14 @@ import {
   Dimensions,
 } from "react-native";
 import { StatusBar } from "expo-status-bar";
-import { useFonts } from "expo-font";
-import * as SplashScreen from "expo-splash-screen";
 import { AntDesign } from "@expo/vector-icons";
-
-SplashScreen.preventAutoHideAsync();
 
 const initialState = {
   email: "",
   password: "",
 };
 
-export default function LoginScreen() {
+export default function LoginScreen({ navigation }) {
   const [isShowKeyboard, setIsShowKeyboard] = useState(false);
   const [state, setState] = useState(initialState);
   const [emailFocus, setEmailFocus] = useState(false);
@@ -45,22 +41,6 @@ export default function LoginScreen() {
     };
   }, []);
 
-  // const [fontsLoaded] = useFonts({
-  //   "Roboto-regular": require("../assets/fonts/Roboto-Regular.ttf"),
-  //   "Roboto-medium": require("../assets/fonts/Roboto-Medium.ttf"),
-  //   "Roboto-bold": require("../assets/fonts/Roboto-Bold.ttf"),
-  // });
-
-  // const onLayoutRootView = useCallback(async () => {
-  //   if (fontsLoaded) {
-  //     await SplashScreen.hideAsync();
-  //   }
-  // }, [fontsLoaded]);
-
-  // if (!fontsLoaded) {
-  //   return null;
-  // }
-
   const keyboardHide = () => {
     setIsShowKeyboard(true);
     Keyboard.dismiss();
@@ -70,7 +50,7 @@ export default function LoginScreen() {
 
   return (
     <TouchableWithoutFeedback onPress={keyboardHide}>
-      <View style={styles.container} >
+      <View style={styles.container}>
         <ImageBackground
           source={require("../assets/images/Photo_BG.png")}
           style={styles.image}
@@ -140,7 +120,15 @@ export default function LoginScreen() {
                 >
                   <Text style={styles.btnTitle}>Login</Text>
                 </TouchableOpacity>
-                <Text style={styles.login}>Don't have an account? Sign in</Text>
+                <Text style={styles.login}>
+                  Don't have an account?
+                  <Text
+                    style={styles.login}
+                    onPress={() => navigation.navigate("Register")}
+                  >
+                    Sign up
+                  </Text>
+                </Text>
               </View>
             </KeyboardAvoidingView>
           </View>

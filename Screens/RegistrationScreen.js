@@ -21,7 +21,7 @@ const initialState = {
   password: "",
 };
 
-export default function RegistrationScreen() {
+export default function RegistrationScreen({ navigation }) {
   const [isShowKeyboard, setIsShowKeyboard] = useState(false);
   const [state, setState] = useState(initialState);
   const [loginFocus, setLoginFocus] = useState(false);
@@ -136,12 +136,18 @@ export default function RegistrationScreen() {
                 <TouchableOpacity
                   style={styles.btn}
                   activeOpacity={0.8}
-                  onPress={() => keyboardHide(false)}
+                  onPress={() => { keyboardHide(false); navigation.navigate('Home')}}
                 >
                   <Text style={styles.btnTitle}>Registration</Text>
                 </TouchableOpacity>
                 <Text style={styles.login}>
-                  Already have an account? Log in
+                  Already have an account?
+                  <Text
+                    style={styles.login}
+                    onPress={() => navigation.navigate("Login")}
+                  >
+                    Sign in
+                  </Text>
                 </Text>
               </View>
             </KeyboardAvoidingView>
@@ -186,7 +192,7 @@ const styles = StyleSheet.create({
     textAlign: "center",
     fontFamily: "Roboto-medium",
     fontSize: 30,
-    fontWeight: 'medium',
+    fontWeight: "medium",
     color: "#212121",
     marginTop: 92,
     marginBottom: 32,
