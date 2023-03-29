@@ -11,13 +11,16 @@ import {
   TouchableWithoutFeedback,
   Platform,
 } from "react-native";
+import { useSelector } from "react-redux";
 import { Camera } from "expo-camera";
 import * as Location from "expo-location";
 import * as MediaLibrary from "expo-media-library";
 import { Entypo } from "@expo/vector-icons";
 import { Ionicons } from "@expo/vector-icons";
 import { FontAwesome5 } from "@expo/vector-icons";
+import ToastManager, { Toast } from "toastify-react-native";
 import uuid from "react-native-uuid";
+import db from "../firebase/config";
 
 const initialState = {
   id: "",
@@ -35,18 +38,18 @@ export default function CreatePostsScreen({ navigation }) {
   const [type, setType] = useState(Camera.Constants.Type.back);
   const [photo, setPhoto] = useState(null);
   const [state, setState] = useState(initialState);
-
+  const { userId, name: owner } = useSelector((state) => state.auth);
   useEffect(() => {
     (async () => {
       let { status } = await Camera.requestCameraPermissionsAsync();
       await MediaLibrary.requestPermissionsAsync();
       setHasPermission(status === "granted");
 
-      const loc = await Location.requestForegroundPermissionsAsync();
-      if (loc.status !== "granted") {
-        setErrorMsg("Permission to access location was denied");
-        return;
-      }
+      await Location.requestForegroundPermissionsAsync();
+      // if (loc.status !== "granted") {
+      //   console.log("Permission to access location was denied");
+      //   // return;
+      // }
     })();
   }, []);
 
@@ -65,21 +68,59 @@ export default function CreatePostsScreen({ navigation }) {
   const handleSubmit = async () => {
     setIsShowKeyboard(false);
     Keyboard.dismiss();
-
-    navigation.navigate("DefaultScreen", state);
+    uploadPostToServer();
     setState(initialState);
     setPhoto(null);
+    navigation.navigate("DefaultScreen", state);
   };
 
   const onDelete = () => {
-    navigation.navigate("DefaultScreen");
     setState(initialState);
     setPhoto(null);
+    navigation.navigate("DefaultScreen");
+  };
+
+  const uploadPhotoToServer = async () => {
+    const response = await fetch(photo);
+    const file = await response.blob();
+
+    const unicPostId = uuid.v4();
+
+    await db.storage().ref(`postImage/${unicPostId}`).put(file);
+
+    const processedPhoto = await db
+      .storage()
+      .ref("postImage")
+      .child(unicPostId)
+      .getDownloadURL();
+
+    return processedPhoto;
+  };
+
+  const uploadPostToServer = async () => {
+    const uploadImage = await uploadPhotoToServer();
+
+    const createPost = await db.firestore().collection("posts").add({
+      photo: uploadImage,
+      name: state.name,
+      latitude: state.latitude,
+      longitude: state.longitude,
+      city: state.city,
+      userId,
+      owner,
+      commentsCount: 0,
+      likesCount: 0,
+    });
   };
 
   return (
     <TouchableWithoutFeedback onPress={keyboardHide}>
       <View style={styles.container}>
+        <ToastManager
+          hasBackdrop={true}
+          duration={2000}
+          backdropColor={"red"}
+        />
         <Camera
           style={styles.camera}
           type={type}
@@ -99,7 +140,6 @@ export default function CreatePostsScreen({ navigation }) {
           >
             <Text style={{ fontSize: 18, color: "red" }}> Flip </Text>
           </TouchableOpacity>
-
           <View style={styles.photoView}>
             <TouchableOpacity
               style={styles.button}
@@ -107,14 +147,24 @@ export default function CreatePostsScreen({ navigation }) {
                 if (cameraRef) {
                   const { uri } = await cameraRef.takePictureAsync();
                   setPhoto(uri);
-                  const location = await Location.getCurrentPositionAsync({});
+
+                  try {
+                    const location = await Location.getCurrentPositionAsync({});
+                    console.log(location);
+
+                    setState((prev) => ({
+                      ...prev,
+                      latitude: location.coords?.latitude,
+                      longitude: location.coords?.longitude,
+                    }));
+                  } catch (error) {
+                    console.log("Permission to access location was denied");
+                  }
 
                   setState((prev) => ({ ...prev, uri }));
                   await MediaLibrary.createAssetAsync(uri);
                   setState((prev) => ({
                     ...prev,
-                    latitude: location.coords.latitude,
-                    longitude: location.coords.longitude,
                     id: uuid.v4(),
                   }));
                   console.log(state);
@@ -277,6 +327,8 @@ const styles = StyleSheet.create({
     alignSelf: "center",
     paddingHorizontal: 32,
     paddingVertical: 16,
+    // backgroundColor: "#FF6C00",
+    // backgroundColor: state.name && state.city ? "#F6F6F6" : "#F6F6F6",
     borderRadius: 100,
   },
   btnText: {

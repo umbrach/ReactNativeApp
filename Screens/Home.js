@@ -1,9 +1,11 @@
 import PostsScreen from "./PostsScreen";
 
-export default function HomeScreen() {
+const HomeScreen = () => {
   return (
     <>
       <PostsScreen />
     </>
   );
-}
+};
+
+export default HomeScreen;
